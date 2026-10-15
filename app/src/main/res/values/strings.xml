@@ -6,4 +6,6 @@
     <string name="grant_permissions">منح الصلاحيات</string>
     <string name="recording_channel_name">تسجيل المكالمات</string>
     <string name="notification_text">جاري تسجيل المكالمة…</string>
+    <string name="manual_start">ابدأ تسجيل يدوي (اختبار)</string>
+    <string name="manual_stop">إيقاف التسجيل</string>
 </resources>
