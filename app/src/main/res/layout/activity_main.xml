@@ -35,6 +35,15 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btnManualRecord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/manual_start"
+        android:backgroundTint="@color/accent" />
+
     <LinearLayout
         android:id="@+id/layoutPermissions"
         android:layout_width="match_parent"
