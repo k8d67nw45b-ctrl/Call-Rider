@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Call Rider</string>
+    <string name="auto_record_label">تسجيل تلقائي للمكالمات</string>
+    <string name="no_recordings">لا توجد تسجيلات بعد</string>
+    <string name="permissions_needed">التطبيق يحتاج صلاحيات المايك وحالة الهاتف للعمل</string>
+    <string name="grant_permissions">منح الصلاحيات</string>
+    <string name="recording_channel_name">تسجيل المكالمات</string>
+    <string name="notification_text">جاري تسجيل المكالمة…</string>
+</resources>
