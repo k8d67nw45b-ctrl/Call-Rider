@@ -24,9 +24,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var switchAutoRecord: SwitchMaterial
     private lateinit var layoutPermissions: LinearLayout
     private lateinit var btnGrantPermissions: Button
+    private lateinit var btnManualRecord: Button
     private lateinit var tvEmpty: TextView
     private lateinit var recyclerRecordings: RecyclerView
     private lateinit var adapter: RecordingsAdapter
+
+    private var isManualRecording = false
 
     private val requiredPermissions: Array<String>
         get() {
@@ -53,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         switchAutoRecord = findViewById(R.id.switchAutoRecord)
         layoutPermissions = findViewById(R.id.layoutPermissions)
         btnGrantPermissions = findViewById(R.id.btnGrantPermissions)
+        btnManualRecord = findViewById(R.id.btnManualRecord)
         tvEmpty = findViewById(R.id.tvEmpty)
         recyclerRecordings = findViewById(R.id.recyclerRecordings)
 
@@ -75,6 +79,30 @@ class MainActivity : AppCompatActivity() {
 
         btnGrantPermissions.setOnClickListener {
             permissionLauncher.launch(requiredPermissions)
+        }
+
+        btnManualRecord.setOnClickListener {
+            if (!hasAllPermissions()) {
+                permissionLauncher.launch(requiredPermissions)
+                return@setOnClickListener
+            }
+            if (!isManualRecording) {
+                val serviceIntent = Intent(this, RecordingService::class.java).apply {
+                    action = RecordingService.ACTION_START
+                }
+                ContextCompat.startForegroundService(this, serviceIntent)
+                btnManualRecord.text = getString(R.string.manual_stop)
+                isManualRecording = true
+                Toast.makeText(this, "بدأ التسجيل، احكي شوي ثم اضغط إيقاف", Toast.LENGTH_SHORT).show()
+            } else {
+                val serviceIntent = Intent(this, RecordingService::class.java).apply {
+                    action = RecordingService.ACTION_STOP
+                }
+                startService(serviceIntent)
+                btnManualRecord.text = getString(R.string.manual_start)
+                isManualRecording = false
+                Toast.makeText(this, "توقف التسجيل، راجع القائمة بالأسفل", Toast.LENGTH_SHORT).show()
+            }
         }
 
         updatePermissionsBanner()
