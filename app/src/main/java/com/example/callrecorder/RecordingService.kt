@@ -69,22 +69,33 @@ class RecordingService : Service() {
             Log.w(TAG, "Could not enable speakerphone: ${e.message}")
         }
 
-        try {
-            recorder = MediaRecorder().apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                setAudioEncodingBitRate(128000)
-                setAudioSamplingRate(44100)
-                setOutputFile(outputFile!!.absolutePath)
-                prepare()
-                start()
+        // Try VOICE_COMMUNICATION first (sometimes captures call audio better
+        // than plain MIC on certain devices). If it fails to even initialize,
+        // fall back to plain MIC so recording still works outside calls.
+        val sourcesToTry = listOf(
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+            MediaRecorder.AudioSource.MIC
+        )
+
+        for (source in sourcesToTry) {
+            try {
+                recorder = MediaRecorder().apply {
+                    setAudioSource(source)
+                    setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                    setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                    setAudioEncodingBitRate(128000)
+                    setAudioSamplingRate(44100)
+                    setOutputFile(outputFile!!.absolutePath)
+                    prepare()
+                    start()
+                }
+                Log.i(TAG, "Recording started with source $source: ${outputFile?.absolutePath}")
+                return
+            } catch (e: Exception) {
+                Log.e(TAG, "Source $source failed: ${e.message}")
+                recorder?.release()
+                recorder = null
             }
-            Log.i(TAG, "Recording started: ${outputFile?.absolutePath}")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to start recording: ${e.message}")
-            recorder?.release()
-            recorder = null
         }
     }
 
